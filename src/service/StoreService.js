@@ -61,6 +61,32 @@ class StoreService {
       fullPriceQuantity: fullPriceQuantity
     };
   }
+
+  /**
+   * 상품의 재고를 차감합니다. (프로모션 재고 우선)
+   * @param {Array} products - 전체 상품 목록
+   * @param {string} name - 차감할 상품명
+   * @param {number} quantity - 차감할 총 수량
+   */
+  updateStock(products, name, quantity) {
+    let remaining = quantity;
+
+    // 1. 프로모션 재고가 있는 상품 먼저 찾아서 차감
+    const promoProduct = products.find(p => p.name === name && p.promotion !== null);
+    if (promoProduct && promoProduct.quantity > 0) {
+      const decrease = Math.min(promoProduct.quantity, remaining);
+      promoProduct.quantity -= decrease;
+      remaining -= decrease;
+    }
+
+    // 2. 남은 수량이 있다면 일반 재고에서 차감
+    if (remaining > 0) {
+      const normalProduct = products.find(p => p.name === name && p.promotion === null);
+      if (normalProduct) {
+        normalProduct.quantity -= remaining;
+      }
+    }
+  }
 }
 
 export default StoreService;
