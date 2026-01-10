@@ -1,13 +1,18 @@
 import { Console } from "@woowacourse/mission-utils";
+import { MESSAGES } from "../constants/constants.js";
 
 const OutputView = {
   printWelcome(products) {
-    Console.print("\n안녕하세요. W편의점입니다.\n현재 보유하고 있는 상품입니다.\n");
-    products.forEach(p => {
-      const stock = p.quantity === 0 ? "재고 없음" : `${p.quantity}개`;
-      const promo = p.promotion ? p.promotion : "";
-      Console.print(`- ${p.name} ${p.price.toLocaleString()}원 ${stock} ${promo}`);
-    });
+    Console.print(MESSAGES.WELCOME);
+    products.forEach((products) => {
+      const { name, price, quantity, promotion } = products;
+      const priceText = price.toLocaleString(); // 1000 -> 1,000
+      const quantityText = quantity === 0 ? "품절" : `(${quantity}개 남음)`;
+      const promotionText = promotion ? promotion : "";
+
+      Console.print(`- ${name} ${priceText}원 ${quantityText} ${promotionText}`.trim());
+    }
+    );
   },
 
   printError(message) {

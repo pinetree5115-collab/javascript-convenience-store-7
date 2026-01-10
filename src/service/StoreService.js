@@ -1,17 +1,30 @@
-class StoreService {
-  #products = [];
+import { DateTimes } from "@woowacourse/mission-utils";
 
-  constructor(products) {
-    this.#products = products;
+class StoreService {
+  /**
+   * 오늘 날짜가 프로모션 기간 내에 있는지 확인합니다.
+   * @param {Object} promotion - PromotionConverter에서 만든 프로모션 객체
+   * @returns {boolean}
+   */
+  isPromotionActive(promotion) {
+    if (!promotion) return false;
+    // mission-utils에서 현재 날짜를 가져옵니다. (테스트 환경에서도 이 함수가 시간을 제어함)
+    const now = DateTimes.now();
+
+    // 시작일 <= 오늘 <= 종료일 확인
+    return now >= promotion.startdate && now <= promotion.enddate;
   }
 
-  // 재고 확인, 프로모션 계산, 최종 결제 금액 산출 로직이 여기 들어갑니다.
-  calculatePayment(orderItems) {
-    // 1. 재고 차감 가능 여부 확인
-    // 2. 프로모션 적용 계산
-    // 3. 멤버십 할인 적용
-    // 4. 최종 결과 반환
+  /**
+   * 특정 상품에 적용되는 프로모션 정보를 찾아 반환합니다.
+   * @param {string} promotionName - 상품에 적힌 프로모션 이름
+   * @param {Array} promotions - 모든 프로모션 정보 배열
+   */
+
+  findPromotion(promotionName, promotions) {
+    return promotions.find(p => p.name === promotionName) || null;
   }
 }
+
 
 export default StoreService;
